@@ -4,8 +4,13 @@
 
 ### How to run
 
-Move to the directory containing the source code (with the node dependencies found on onedrive):
-`cd ./.../.../mendix-temp125`
+Run the following command in the working directory to download the files:  
+`git clone https://github.com/mendix-temp/5876f6811e94b2b5745a4b3d48a08fcfbd7622421dfb545e70fdf4fda13bfaa4.git`  
+
+Note that the directory is private, and that you need to be added to the repository before downloading the files
+
+Download the Node.js dependencies using `npm install`
+
 Then start the program:
 `npm run start`
 
@@ -26,6 +31,9 @@ The executable can be found at: `./out/make/Mendix Workstation-<version> Setup.e
 
 ### How to deploy for autoupdate
 
+Ensure that the authToken field in module.exports.publishers[0].authToken in forge.config.js is properly setup. 
+You can get a new token on github in settings / developer settings / personal access tokens / tokens (classic) if needed
+
 Make sure that all files are committed and pushed to the github repository
 
 `git status`: show which files are going to be added to the commit  
@@ -34,7 +42,7 @@ Make sure that all files are committed and pushed to the github repository
 `git push`: push the commited files to github repository  
 `npm run publish`: create a software release on github
 
-Then, you need to go to log in the github repo and follow the following steps to set the last publish as the latest release (the one used by the autoupdate)  
+Then, you need to log in the github repo and follow the following steps to set the last publish as the latest release (the one used by the autoupdate)  
 
 <details>
   <summary><b>Steps</b></summary>
@@ -54,15 +62,8 @@ Then, you need to go to log in the github repo and follow the following steps to
 
 ### How to update version number
 
-Change the "version" fields in package.json and package-lock.json to the correct number
+Change the "version" fields in package.json, package-lock.json, and overlay.html to the correct number
 
-### How to clone repository
-
-Run the following command in the working directory to be to download the files:  
-`git clone https://github.com/mendix-temp/mendix-temp125`  
-Note that for privacy reasons, the public github do not contain all the files needed to compile the application.  
-The additional dependency (forge.config.js) can be found in the shared onedrive. 
-The Node.js dependencies can be downloaded using the following command at the root of the project: `npm install`
 
 ## Architecture
 
@@ -266,31 +267,3 @@ Back to the organization of the code. The main process can be found at `./src/ma
 - `./src/login` contains both an html and a script that gather input from user (login, password, web service) to log into the Workstation Management app and get the workstation configuration.
 - `./src/main_window` holds the necessary files to render the main window of the application (the one that displays the Web Apps to the user)
 - `./src/overlay` holds the necessary files to render the settings window.
-
-### Files walkthrough
-
-Every large file is separated into logical parts separated by large headers. Such headers include function definition, IPC, ...
-
-#### main.js
-
-- lines   0 -> 22: Import libraries
-- lines  23 ->  49: Define global data structures used later in the program
-- lines  50 -> 124: Create main window and start all rendering processes
-- lines 125 -> 181: Define functions used later in the program
-- lines 182 -> 454: Handle communication between the main process and the rendering processes
-- lines 455 -> 532: Handle events triggered by windows (resize, ready-to-show, ...)
-- lines 533 -> 618: Handle all the logic around getting the configuration file from the Workstation Management web service
-- lines 619 -> 729: Create the driver processes and a communication channel between them and the main process
-- lines 730 -> end: Define functions that relay messages from driver utility process to process communicating with Workstation Connector so that it can relay the message to the Connector
-
-#### overlay.js
-
-- lines   3 -> 100: Define functions that will be used later in the program
-- lines 101 -> 182: Send and receive messages to/from main process and perform necessary actions depending on message
-- lines 183 -> end: React to 'click' events
-
-#### renderer.js
-
-- lines   7 -> 106: Define functions that will be used later in the program
-- lines 107 -> 197: Send and receive messages to/from main process and perform necessary actions depending on message
-- lines 198 -> end: React to 'click' events
